@@ -1,6 +1,10 @@
 # This script creates Deep Learning VM
 # CLI example: https://cloud.google.com/deep-learning-vm/docs/quickstart-cli
 
+provider "google" {
+  project = "${var.project_id}"
+}
+
 data "google_compute_image" "deep_learning_image" {
   # https://cloud.google.com/deep-learning-vm/docs/images
 
