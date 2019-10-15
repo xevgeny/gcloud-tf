@@ -17,7 +17,7 @@ resource "google_compute_instance" "deep_learning_vm" {
 
   name         = "deep-learning-vm"
   machine_type = "n1-standard-4"
-  zone         = "europe-west1-b"
+  zone         = "europe-west4-b"
 
   boot_disk {
     initialize_params {
@@ -35,7 +35,7 @@ resource "google_compute_instance" "deep_learning_vm" {
   # GPU types: https://cloud.google.com/compute/docs/gpus/
 
   guest_accelerator {
-    type  = "nvidia-tesla-k80"
+    type  = "nvidia-tesla-t4"
     count = 1
   }
 
