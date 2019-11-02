@@ -5,8 +5,11 @@ provider "google" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "test-cluster"
-  location = "europe-west4"
+  name = "test-cluster"
+
+  # If you specify a zone (such as us-central1-a), 
+  # the cluster will be a zonal cluster with a single cluster master.
+  location = "europe-west4-c"
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
