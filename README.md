@@ -21,4 +21,10 @@ terraform init
 terraform plan
 ```
 
-Provision the environment with `terraform apply`. Don't forget to clean up the infrastructure when you don't use it - `terraform destroy`
+Apply the execution plan:
+
+```
+terraform apply
+```
+
+Don't forget to clean up the infrascture after with `terraform destroy`
