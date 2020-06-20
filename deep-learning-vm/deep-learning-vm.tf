@@ -1,5 +1,4 @@
 # This script creates Deep Learning VM
-# CLI example: https://cloud.google.com/deep-learning-vm/docs/quickstart-cli
 
 provider "google" {
   project = "${var.project_id}"
@@ -8,8 +7,15 @@ provider "google" {
 data "google_compute_image" "deep_learning_image" {
   # https://cloud.google.com/deep-learning-vm/docs/images
 
-  family  = "tf2-latest-gpu"
+  family  = "pytorch-latest-gpu" 
   project = "deeplearning-platform-release"
+}
+
+resource "google_compute_disk" "boot_disk" {
+  name  = "boot-disk"
+  zone  = "europe-west4-b"
+  image = "${data.google_compute_image.deep_learning_image.self_link}"
+  size  = 50
 }
 
 resource "google_compute_instance" "deep_learning_vm" {
@@ -20,9 +26,12 @@ resource "google_compute_instance" "deep_learning_vm" {
   zone         = "europe-west4-b"
 
   boot_disk {
-    initialize_params {
-      image = "${data.google_compute_image.deep_learning_image.self_link}"
-    }
+    source = google_compute_disk.boot_disk.name
+  }
+
+  # Attach an existing persistent disk
+  attached_disk {
+    source = "deep-learning-pd"
   }
 
   scheduling {
@@ -33,11 +42,12 @@ resource "google_compute_instance" "deep_learning_vm" {
   # Note 2: GPU accelerators can only be used with on_host_maintenance option set to TERMINATE.
   #
   # GPU types: https://cloud.google.com/compute/docs/gpus/
+  # GPU comparison chart: https://cloud.google.com/compute/docs/gpus#gpu_comparison_chart
 
-  guest_accelerator {
-    type  = "nvidia-tesla-t4"
-    count = 1
-  }
+  # guest_accelerator {
+  #  type  = "nvidia-tesla-t4"
+  #  count = 1
+  # }
 
   metadata = {
     install-nvidia-driver = "True"
@@ -46,8 +56,9 @@ resource "google_compute_instance" "deep_learning_vm" {
   network_interface {
     network = "default"
 
-    access_config {
-      // Ephemeral IP
-    }
+    # Uncomment this to generate external IP
+    # access_config {
+    #  # Ephemeral IP
+    # }
   }
 }
